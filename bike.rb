@@ -2,38 +2,76 @@
 
 class Bike
 
+  attr_reader :id, :color, :price, :weight
+  attr_accessor :rented
+
   STANDARD_WEIGHT = 200 # lbs
   MAX_CARGO_ITEMS = 10
 
-  attr_accessor :id, :color, :price, :weight, :rented, :cargo_contents
-
-  def initialize(id, color, price, weight = STANDARD_WEIGHT, rented = false)
+  def initialize(id:, color:, price:, weight: STANDARD_WEIGHT, rented: false)
     @id = id
     @color = color
     @price = price
     @weight = weight
     @rented = rented
-    @cargo_contents = []
+    @cargo = Cargo.new(MAX_CARGO_ITEMS)
   end
 
   def rent!
     self.rented = true
   end
 
+  def return!
+    self.rented = false
+  end
+
   def add_cargo(item)
-    self.cargo_contents << item
+    @cargo.add(item)
   end
 
   def remove_cargo(item)
-    self.cargo_contents.remove(item)
+    @cargo.remove(item)
   end
 
   def pannier_capacity
-    MAX_CARGO_ITEMS
+    @cargo.capacity
   end
 
   def pannier_remaining_capacity
-    MAX_CARGO_ITEMS - self.cargo_contents.size
+    @cargo.remaining_capacity
   end
 
+  # PRIVATE CLASS TO HANDLE CARGO LOGIC
+  private
+  class Cargo
+    attr_reader :contents
+
+    def initialize(max_capacity)
+      @contents = []
+      @max_capacity = max_capacity
+    end
+
+    def full?
+      @contents.size >= @max_capacity
+    end
+
+    def add(item)
+      raise "Capacity Full" if full?
+
+      @contents << item
+    end
+
+    def remove(item)
+      @contents.delete(item)
+    end
+
+    def capacity
+      @max_capacity
+    end
+
+    def remaining_capacity
+      @max_capacity = @contents.size
+    end
+
+  end
 end
