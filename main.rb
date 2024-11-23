@@ -10,4 +10,3 @@ bike = Bike.new(1, :pink, 99.99, items)
 rental = Rental.new(bike)
 
 puts "Total Price: #{rental.price}, Total Weight: #{rental.weight}"
-
